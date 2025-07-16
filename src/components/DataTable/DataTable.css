@@ -1,0 +1,37 @@
+.table {
+    width: 800px;
+    height: 600px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    margin: 8px;
+    border-radius: 4px;
+}
+
+.tableLine {
+    border: 0.2px solid rgb(255, 255, 255, 0.3);
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+    padding: 8px;
+}
+
+.tableHeader {
+    border: 1px solid #ddd;
+    padding: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.tableFooter {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: center;
+}

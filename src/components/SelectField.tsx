@@ -1,6 +1,6 @@
-import { parseAsString, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 
-import type { EndpointOptions } from '../hooks/fetchGithubSearch';
+import { parseAsSearchType } from '../utils/queryParsers';
 
 const endpointOptions = [
     'repositories',
@@ -15,14 +15,14 @@ const endpointOptions = [
 function SelectField() {
     const [searchType, setSearchType] = useQueryState(
         'searchType',
-        parseAsString.withDefault('repositories')
+        parseAsSearchType
     );
 
     return (
         <select
             style={{ width: 100, height: 36 }}
             value={searchType}
-            onChange={(e) => setSearchType(e.target.value as EndpointOptions)}
+            onChange={(e) => setSearchType(e.target.value)}
         >
             {endpointOptions.map((item) => (
                 <option key={item} value={item}>

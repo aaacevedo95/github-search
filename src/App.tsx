@@ -1,42 +1,75 @@
+import { useState } from 'react';
 import { parseAsString, useQueryState } from 'nuqs';
 
+import SelectField from './components/SelectField';
 import SearchField from './components/SearchField';
-import useGithubSearch from './hooks/fetchGithubSearch';
+import DataTable from './components/DataTable';
+
+import useGithubSearch from './hooks/useGithubSearch';
+import { parseAsSearchType } from './utils/queryParsers';
 
 import './style/App.css';
-import SelectField from './components/SelectField';
 
 function App() {
-    // const [searchText] = useQueryState('searchText', parseAsString);
-    // const { loading, data, error } = useGithubSearch({
-    //     endpoint: 'repositories',
-    //     params: { q: searchText },
-    // });
+    const [searchText] = useQueryState(
+        'searchText',
+        parseAsString.withDefault('')
+    );
+    const [searchType] = useQueryState('searchType', parseAsSearchType);
+
+    const [{ page, perPage }, setPagination] = useState({
+        page: 1,
+        perPage: 30,
+    });
+
+    const { data, error, lastPage, loading, executeSearch } = useGithubSearch();
+
+    const handleClick = () => {
+        executeSearch({
+            endpoint: searchType,
+            params: { q: searchText, per_page: perPage, page },
+        });
+    };
+
+    const handlePageChange = (pageChange: number) => {
+        const newPage = Math.max(1, (page || 1) + pageChange);
+
+        executeSearch({
+            endpoint: searchType,
+            params: { q: searchText, per_page: perPage, page: newPage },
+        });
+        setPagination((prev) => ({ ...prev, page: newPage }));
+    };
+
+    console.log('data', loading);
 
     return (
         <>
             <div
                 style={{
-                    display: 'flex',
                     gap: 4,
+                    display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
             >
                 <SearchField />
                 <SelectField />
+
+                <button className="fetchButton" onClick={handleClick}>
+                    Fetch
+                </button>
             </div>
-            Please make a small app to search GitHub repositories
-            <br />
-            - Implement a design in CSS. It can be as simple as you want.
-            <br />
-            - Implement pagination.
-            <br />
-            - Implement any feature or use any library that you consider.
-            <br />
-            Once completed, please post the app to GitHub and send us the URL.
-            <br />* Refrain from adding our company name anywhere in your code
-            or comments.
+
+            <DataTable
+                data={data}
+                loading={loading}
+                error={error}
+                lastPage={lastPage}
+                page={page}
+                perPage={perPage}
+                handlePageChange={handlePageChange}
+            />
         </>
     );
 }

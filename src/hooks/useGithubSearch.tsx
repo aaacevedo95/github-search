@@ -1,25 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { Endpoints } from '@octokit/types';
 
 import customOctokit from '../api/OctoKit';
 
-type EndpointOptions =
-    | 'repositories'
-    | 'users'
-    | 'issues'
-    | 'commits'
-    | 'topics'
-    | 'labels'
-    | 'code';
-
-// types for response and params:
-// https://www.npmjs.com/package/@octokit/types
 type SearchReposParams = Endpoints['GET /search/repositories']['parameters'];
 type SearchReposResponse =
     Endpoints['GET /search/repositories']['response']['data'];
 
-type FetchProps = {
-    endpoint: EndpointOptions;
+type SearchParams = {
+    endpoint: string;
     params: SearchReposParams;
     headers?: Record<string, string>;
 };
@@ -27,21 +16,23 @@ type FetchProps = {
 /**
  * Searches through various github /search/ endpoint types.
  *
- * @param endpoint - One of the following:
-  'repositories', 'users', 'issues', 'commits', 'topics', 'labels', 'code',  
- * @param params - The params
- * @param headers -  OPTIONAL, any extra headers you'd like to add.
+ * @param endpoint - One of the following: 'repositories', 'users', 'issues', 'commits', 'topics', 'labels', 'code'.
+ * @param initialParams - The initial parameters for the search.
+ * @param initialHeaders - OPTIONAL, any extra headers you'd like to add.
  */
-function useGithubSearch({ endpoint, params, headers = {} }: FetchProps) {
+function useGithubSearch() {
+    const [lastPage, setLastPage] = useState<number>(1);
     const [data, setData] = useState<SearchReposResponse | null>(null);
-    const [loading, setIsLoading] = useState<boolean>(true);
+    const [loading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
-    useEffect(() => {
-        setIsLoading(true);
-        setError(null);
+    const executeSearch = useCallback(
+        async ({ endpoint, params, headers = {} }: SearchParams) => {
+            setIsLoading(true);
+            setError(null);
+            setData(null);
 
-        (async () => {
+            console.log('params', params);
             try {
                 const response = await customOctokit.request(
                     `GET /search/${endpoint}`,
@@ -53,17 +44,24 @@ function useGithubSearch({ endpoint, params, headers = {} }: FetchProps) {
                         },
                     }
                 );
+
+                const linkHeader = response.headers.link || '';
+                const lastPage = Number(
+                    linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || 1
+                );
+
                 setData(response.data);
+                setLastPage(lastPage);
             } catch (err) {
                 setError(err as Error);
             } finally {
                 setIsLoading(false);
             }
-        })();
-    }, [endpoint, params, headers]);
+        },
+        []
+    );
 
-    return { data, loading, error };
+    return { data, lastPage, loading, error, executeSearch };
 }
 
 export default useGithubSearch;
-export type { EndpointOptions };
