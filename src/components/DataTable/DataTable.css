@@ -1,14 +1,16 @@
+ 
 .table {
     width: 800px;
     height: 600px;
     overflow: auto;
-    border: 1px solid #ccc;
+    border: 1px solid #374151;
     margin: 8px;
-    border-radius: 4px;
+    border-radius: 8px;
+    background-color: #111827;
 }
 
 .tableLine {
-    border: 0.2px solid rgb(255, 255, 255, 0.3);
+    border: 0.2px solid #374151;
     max-width: 300px;
     word-wrap: break-word;
     white-space: normal;
@@ -16,7 +18,7 @@
 }
 
 .tableHeader {
-    border: 1px solid #ddd;
+    border: 1px solid #374151;
     padding: 8px;
     position: sticky;
     top: 0;
@@ -35,3 +37,32 @@
     justify-content: space-between;
     align-items: center;
 }
+
+
+.loader {
+    position:absolute;
+    top:50%;
+    left:50%;
+    animation: loader 1s linear infinite;
+  }
+  
+  @keyframes loader {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+@media (prefers-color-scheme: light) {
+    .table {
+        background-color: #e8edf3;
+        border: 1px solid #ddd;
+        color: #213547;
+    }
+
+    .tableLine {
+        border: 1px solid #ddd;  
+    }
+    
+    .tableHeader {
+        border: 1px solid #ddd;
+    }
+}  

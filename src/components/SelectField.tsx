@@ -20,7 +20,7 @@ function SelectField() {
 
     return (
         <select
-            style={{ width: 100, height: 36 }}
+            style={{ width: 100, height: 36,borderWidth:1,borderRadius:4 }}
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
         >

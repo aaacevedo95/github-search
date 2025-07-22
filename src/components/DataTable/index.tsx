@@ -1,6 +1,7 @@
 import type { Endpoints } from '@octokit/types';
 
 import './DataTable.css';
+import { LoaderPinwheel } from 'lucide-react';
 
 type DataTableProps = {
     data: null | Endpoints['GET /search/repositories']['response']['data'];
@@ -12,6 +13,48 @@ type DataTableProps = {
     handlePageChange: (newPage: number) => void;
 };
 
+
+function renderCell(value: any) {
+    if (value === null || value === undefined) return "";
+  
+    
+    if (
+      typeof value === "object" &&
+      "login" in value &&
+      "html_url" in value
+    ) {
+       return (
+        <a
+          href={value.html_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+        >
+          <img
+            src={value.avatar_url}
+            alt={value.login}
+            style={{ width: "20px", height: "20px", borderRadius: "50%" }}
+          />
+          {value.login}
+        </a>
+      );
+    }
+  
+    // render array
+    if (Array.isArray(value)) {
+      return value.map((v, i) => <span key={i}>{String(v)}{i < value.length - 1 ? ', ' : ''}</span>);
+    }
+  
+    // in case of objects, break it up
+    if (typeof value === "object") {
+      return <span>{Object.keys(value).slice(0, 3).join(", ")}...</span>;
+    }
+  
+
+    return String(value);
+  }
+
+  
 function DataTable({
     data,
     loading,
@@ -21,11 +64,14 @@ function DataTable({
     perPage,
     handlePageChange,
 }: DataTableProps) {
+
+
     return (
         <div>
             {/* Table Component */}
-
             <div className="table">
+
+                {loading &&  <LoaderPinwheel className="loader" size={64} /> }
                 {data?.items && (
                     <table
                         style={{ width: '100%', borderCollapse: 'collapse' }}
@@ -46,19 +92,15 @@ function DataTable({
                         <tbody>
                             {data?.items?.map((item, index) => (
                                 <tr key={index} className="tableLine">
-                                    {Object.entries(item).map(
-                                        ([key, value]) => (
-                                            <td
-                                                key={key}
-                                                className="tableLine"
-                                                style={{ verticalAlign: 'top' }}
-                                            >
-                                                {typeof value === 'object'
-                                                    ? JSON.stringify(value)
-                                                    : String(value)}
-                                            </td>
-                                        )
-                                    )}
+                                    {Object.entries(item).map(([key, value]) => (
+                                    <td
+                                    key={key}
+                                    className="tableLine"
+                                    style={{ verticalAlign: 'top' }}
+                                    >
+                                    {renderCell(value)}
+                                    </td>
+                                ))}
                                 </tr>
                             ))}
                         </tbody>
