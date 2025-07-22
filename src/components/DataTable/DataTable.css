@@ -1,68 +1,70 @@
- 
 .table {
-    width: 800px;
-    height: 600px;
-    overflow: auto;
-    border: 1px solid #374151;
-    margin: 8px;
-    border-radius: 8px;
-    background-color: #111827;
+  width: 800px;
+  height: 600px;
+  overflow: auto;
+  border: 1px solid #374151;
+  margin: 8px;
+  border-radius: 8px;
+  background-color: #111827;
 }
 
 .tableLine {
-    border: 0.2px solid #374151;
-    max-width: 300px;
-    word-wrap: break-word;
-    white-space: normal;
-    padding: 8px;
+  border: 0.2px solid #374151;
+  max-width: 300px;
+  word-wrap: break-word;
+  white-space: normal;
+  padding: 8px;
 }
 
 .tableHeader {
-    border: 1px solid #374151;
-    padding: 8px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+  border: 1px solid #374151;
+  padding: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .tableFooter {
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
 }
 
 .pagination {
-    display: flex;
-    gap: 8px;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-
 .loader {
-    position:absolute;
-    top:50%;
-    left:50%;
-    animation: loader 1s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: loader 1s linear infinite;
+}
+
+@keyframes loader {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  @keyframes loader {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
   }
+}
 
 @media (prefers-color-scheme: light) {
-    .table {
-        background-color: #e8edf3;
-        border: 1px solid #ddd;
-        color: #213547;
-    }
+  .table {
+    background-color: #e8edf3;
+    border: 1px solid #ddd;
+    color: #213547;
+  }
 
-    .tableLine {
-        border: 1px solid #ddd;  
-    }
-    
-    .tableHeader {
-        border: 1px solid #ddd;
-    }
-}  
+  .tableLine {
+    border: 1px solid #ddd;
+  }
+
+  .tableHeader {
+    border: 1px solid #ddd;
+  }
+}

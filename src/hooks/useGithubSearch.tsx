@@ -5,12 +5,12 @@ import customOctokit from '../api/OctoKit';
 
 type SearchReposParams = Endpoints['GET /search/repositories']['parameters'];
 type SearchReposResponse =
-    Endpoints['GET /search/repositories']['response']['data'];
+  Endpoints['GET /search/repositories']['response']['data'];
 
 type SearchParams = {
-    endpoint: string;
-    params: SearchReposParams;
-    headers?: Record<string, string>;
+  endpoint: string;
+  params: SearchReposParams;
+  headers?: Record<string, string>;
 };
 
 /**
@@ -21,47 +21,47 @@ type SearchParams = {
  * @param initialHeaders - OPTIONAL, any extra headers you'd like to add.
  */
 function useGithubSearch() {
-    const [lastPage, setLastPage] = useState<number>(1);
-    const [data, setData] = useState<SearchReposResponse | null>(null);
-    const [loading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<Error | null>(null);
+  const [lastPage, setLastPage] = useState<number>(1);
+  const [data, setData] = useState<SearchReposResponse | null>(null);
+  const [loading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
-    const executeSearch = useCallback(
-        async ({ endpoint, params, headers = {} }: SearchParams) => {
-            setIsLoading(true);
-            setError(null);
-            setData(null);
+  const executeSearch = useCallback(
+    async ({ endpoint, params, headers = {} }: SearchParams) => {
+      setIsLoading(true);
+      setError(null);
+      setData(null);
 
-            console.log('params', params);
-            try {
-                const response = await customOctokit.request(
-                    `GET /search/${endpoint}`,
-                    {
-                        ...params,
-                        headers: {
-                            ...headers,
-                            'X-GitHub-Api-Version': '2022-11-28',
-                        },
-                    }
-                );
+      console.log('params', params);
+      try {
+        const response = await customOctokit.request(
+          `GET /search/${endpoint}`,
+          {
+            ...params,
+            headers: {
+              ...headers,
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
 
-                const linkHeader = response.headers.link || '';
-                const lastPage = Number(
-                    linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || 1
-                );
+        const linkHeader = response.headers.link || '';
+        const lastPage = Number(
+          linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || 1
+        );
 
-                setData(response.data);
-                setLastPage(lastPage);
-            } catch (err) {
-                setError(err as Error);
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        []
-    );
+        setData(response.data);
+        setLastPage(lastPage);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
-    return { data, lastPage, loading, error, executeSearch };
+  return { data, lastPage, loading, error, executeSearch };
 }
 
 export default useGithubSearch;

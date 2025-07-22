@@ -11,67 +11,67 @@ import { parseAsSearchType } from './utils/queryParsers';
 import './style/App.css';
 
 function App() {
-    const [searchText] = useQueryState(
-        'searchText',
-        parseAsString.withDefault('')
-    );
-    const [searchType] = useQueryState('searchType', parseAsSearchType);
+  const [searchText] = useQueryState(
+    'searchText',
+    parseAsString.withDefault('')
+  );
+  const [searchType] = useQueryState('searchType', parseAsSearchType);
 
-    const [{ page, perPage }, setPagination] = useState({
-        page: 1,
-        perPage: 30,
+  const [{ page, perPage }, setPagination] = useState({
+    page: 1,
+    perPage: 30,
+  });
+
+  const { data, error, lastPage, loading, executeSearch } = useGithubSearch();
+
+  const handleClick = () => {
+    executeSearch({
+      endpoint: searchType,
+      params: { q: searchText, per_page: perPage, page },
     });
+  };
 
-    const { data, error, lastPage, loading, executeSearch } = useGithubSearch();
+  const handlePageChange = (pageChange: number) => {
+    const newPage = Math.max(1, (page || 1) + pageChange);
 
-    const handleClick = () => {
-        executeSearch({
-            endpoint: searchType,
-            params: { q: searchText, per_page: perPage, page },
-        });
-    };
+    executeSearch({
+      endpoint: searchType,
+      params: { q: searchText, per_page: perPage, page: newPage },
+    });
+    setPagination((prev) => ({ ...prev, page: newPage }));
+  };
 
-    const handlePageChange = (pageChange: number) => {
-        const newPage = Math.max(1, (page || 1) + pageChange);
+  console.log('data', loading);
 
-        executeSearch({
-            endpoint: searchType,
-            params: { q: searchText, per_page: perPage, page: newPage },
-        });
-        setPagination((prev) => ({ ...prev, page: newPage }));
-    };
+  return (
+    <>
+      <div
+        style={{
+          gap: 4,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <SearchField />
+        <SelectField />
 
-    console.log('data', loading);
+        <button className="fetchButton" onClick={handleClick}>
+          Fetch
+        </button>
+      </div>
 
-    return (
-        <>
-            <div
-                style={{
-                    gap: 4,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <SearchField />
-                <SelectField />
-
-                <button className="fetchButton" onClick={handleClick}>
-                    Fetch
-                </button>
-            </div>
-
-            <DataTable
-                data={data}
-                loading={loading}
-                error={error}
-                lastPage={lastPage}
-                page={page}
-                perPage={perPage}
-                handlePageChange={handlePageChange}
-            />
-        </>
-    );
+      <DataTable
+        data={data}
+        loading={loading}
+        error={error}
+        lastPage={lastPage}
+        page={page}
+        perPage={perPage}
+        handlePageChange={handlePageChange}
+      />
+    </>
+  );
 }
 
 export default App;

@@ -7,9 +7,9 @@ import App from './App.tsx';
 import './style/index.css';
 
 createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-        <NuqsAdapter>
-            <App />
-        </NuqsAdapter>
-    </StrictMode>
+  <StrictMode>
+    <NuqsAdapter>
+      <App />
+    </NuqsAdapter>
+  </StrictMode>
 );
