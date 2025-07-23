@@ -1,67 +1,84 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { parseAsString, useQueryState } from 'nuqs';
 import type { Endpoints } from '@octokit/types';
 
 import customOctokit from '../api/OctoKit';
+import {
+  parseAsPage,
+  parseAsPerPage,
+  parseAsSearchType,
+} from '../utils/queryParsers';
 
-type SearchReposParams = Endpoints['GET /search/repositories']['parameters'];
 type SearchReposResponse =
   Endpoints['GET /search/repositories']['response']['data'];
 
-type SearchParams = {
-  endpoint: string;
-  params: SearchReposParams;
-  headers?: Record<string, string>;
-};
-
-/**
- * Searches through various github /search/ endpoint types.
- *
- * @param endpoint - One of the following: 'repositories', 'users', 'issues', 'commits', 'topics', 'labels', 'code'.
- * @param initialParams - The initial parameters for the search.
- * @param initialHeaders - OPTIONAL, any extra headers you'd like to add.
- */
 function useGithubSearch() {
+  const [searchText] = useQueryState(
+    'searchText',
+    parseAsString.withDefault('')
+  );
+  const [searchType] = useQueryState('searchType', parseAsSearchType);
+  const [perPage] = useQueryState('perPage', parseAsPerPage);
+  const [page, setPage] = useQueryState('page', parseAsPage);
+
   const [lastPage, setLastPage] = useState<number>(1);
   const [data, setData] = useState<SearchReposResponse | null>(null);
-  const [loading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const executeSearch = useCallback(
-    async ({ endpoint, params, headers = {} }: SearchParams) => {
+  const fetchResults = useCallback(
+    async (pageToFetch: number) => {
       setIsLoading(true);
       setError(null);
       setData(null);
 
-      console.log('params', params);
+      if (pageToFetch === 1) setPage(1);
+
       try {
         const response = await customOctokit.request(
-          `GET /search/${endpoint}`,
+          `GET /search/${searchType}`,
           {
-            ...params,
-            headers: {
-              ...headers,
-              'X-GitHub-Api-Version': '2022-11-28',
-            },
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+            q: searchText,
+            per_page: perPage,
+            page: pageToFetch,
           }
         );
 
         const linkHeader = response.headers.link || '';
-        const lastPage = Number(
+        const last = Number(
           linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || 1
         );
 
         setData(response.data);
-        setLastPage(lastPage);
+        setLastPage(last);
       } catch (err) {
         setError(err as Error);
       } finally {
         setIsLoading(false);
       }
     },
-    []
+    [searchText, searchType, perPage, setPage]
   );
 
-  return { data, lastPage, loading, error, executeSearch };
+  // Fetch results on first load
+  useEffect(() => {
+    const hasQueryParams = searchText !== '';
+
+    if (hasQueryParams) {
+      fetchResults(page);
+    }
+    // Not needed as we leave dep array empty SO that it will load only on first load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return {
+    data,
+    lastPage,
+    isLoading,
+    error,
+    fetchResults,
+  };
 }
 
 export default useGithubSearch;

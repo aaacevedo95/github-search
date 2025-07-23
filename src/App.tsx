@@ -1,47 +1,30 @@
-import { useState } from 'react';
-import { parseAsString, useQueryState } from 'nuqs';
-
 import SelectField from './components/SelectField';
 import SearchField from './components/SearchField';
 import DataTable from './components/DataTable';
 
 import useGithubSearch from './hooks/useGithubSearch';
-import { parseAsSearchType } from './utils/queryParsers';
 
 import './style/App.css';
+import { parseAsPerPage, parseAsSearchType } from './utils/queryParsers';
+
+const endpointOptions = [
+  'repositories',
+  'users',
+  'issues',
+  'commits',
+  'topics',
+  'labels',
+  'code',
+];
+
+const perPageOptions = ['20', '40', '60', '100'];
 
 function App() {
-  const [searchText] = useQueryState(
-    'searchText',
-    parseAsString.withDefault('')
-  );
-  const [searchType] = useQueryState('searchType', parseAsSearchType);
-
-  const [{ page, perPage }, setPagination] = useState({
-    page: 1,
-    perPage: 30,
-  });
-
-  const { data, error, lastPage, loading, executeSearch } = useGithubSearch();
+  const { data, error, lastPage, isLoading, fetchResults } = useGithubSearch();
 
   const handleClick = () => {
-    executeSearch({
-      endpoint: searchType,
-      params: { q: searchText, per_page: perPage, page },
-    });
+    fetchResults(1);
   };
-
-  const handlePageChange = (pageChange: number) => {
-    const newPage = Math.max(1, (page || 1) + pageChange);
-
-    executeSearch({
-      endpoint: searchType,
-      params: { q: searchText, per_page: perPage, page: newPage },
-    });
-    setPagination((prev) => ({ ...prev, page: newPage }));
-  };
-
-  console.log('data', loading);
 
   return (
     <>
@@ -54,7 +37,16 @@ function App() {
         }}
       >
         <SearchField />
-        <SelectField />
+        <SelectField
+          name="searchType"
+          options={endpointOptions}
+          parseType={parseAsSearchType}
+        />
+        <SelectField
+          name="perPage"
+          options={perPageOptions}
+          parseType={parseAsPerPage}
+        />
 
         <button className="fetchButton" onClick={handleClick}>
           Fetch
@@ -63,12 +55,10 @@ function App() {
 
       <DataTable
         data={data}
-        loading={loading}
+        isLoading={isLoading}
         error={error}
         lastPage={lastPage}
-        page={page}
-        perPage={perPage}
-        handlePageChange={handlePageChange}
+        fetchResults={fetchResults}
       />
     </>
   );

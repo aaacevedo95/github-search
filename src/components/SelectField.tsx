@@ -1,30 +1,21 @@
 import { useQueryState } from 'nuqs';
 
-import { parseAsSearchType } from '../utils/queryParsers';
+type SelectFieldProps = {
+  name: string;
+  options: string[];
+  parseType: any;
+};
 
-const endpointOptions = [
-  'repositories',
-  'users',
-  'issues',
-  'commits',
-  'topics',
-  'labels',
-  'code',
-];
-
-function SelectField() {
-  const [searchType, setSearchType] = useQueryState(
-    'searchType',
-    parseAsSearchType
-  );
+function SelectField({ name, options, parseType }: SelectFieldProps) {
+  const [value, setValue] = useQueryState(name, parseType);
 
   return (
     <select
       style={{ width: 100, height: 36, borderWidth: 1, borderRadius: 4 }}
-      value={searchType}
-      onChange={(e) => setSearchType(e.target.value)}
+      value={typeof value === 'string' ? value : ''}
+      onChange={(e) => setValue(e.target.value)}
     >
-      {endpointOptions.map((item) => (
+      {options.map((item) => (
         <option key={item} value={item}>
           {item}
         </option>

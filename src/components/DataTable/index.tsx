@@ -1,16 +1,16 @@
 import type { Endpoints } from '@octokit/types';
+import { LoaderPinwheel } from 'lucide-react';
+import { useQueryState } from 'nuqs';
 
 import './DataTable.css';
-import { LoaderPinwheel } from 'lucide-react';
+import { parseAsPage } from '../../utils/queryParsers';
 
 type DataTableProps = {
   data: null | Endpoints['GET /search/repositories']['response']['data'];
-  loading: boolean;
+  isLoading: boolean;
   error: Error | null;
-  page: number;
   lastPage: number;
-  perPage: number;
-  handlePageChange: (newPage: number) => void;
+  fetchResults: (pageToFetch: number) => Promise<void>;
 };
 
 function renderCell(value: any) {
@@ -58,18 +58,25 @@ function renderCell(value: any) {
 
 function DataTable({
   data,
-  loading,
+  isLoading,
   error,
-  page,
   lastPage,
-  perPage,
-  handlePageChange,
+  fetchResults,
 }: DataTableProps) {
+  const [page, setPage] = useQueryState('page', parseAsPage);
+
+  const handlePageChange = (pageChange: number) => {
+    const newPage = Math.max(1, (page || 1) + pageChange);
+
+    setPage(newPage);
+    fetchResults(newPage);
+  };
+
   return (
     <div>
       {/* Table Component */}
       <div className="table">
-        {loading && <LoaderPinwheel className="loader" size={64} />}
+        {isLoading && <LoaderPinwheel className="loader" size={64} />}
         {data?.items && (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             {/* Header */}
@@ -113,11 +120,18 @@ function DataTable({
 
       {/* Table Footer/ Pagination */}
       <div className="pagination">
-        <button onClick={() => handlePageChange(-1)}>Last</button>
+        <button disabled={page === 1} onClick={() => handlePageChange(-1)}>
+          Prev
+        </button>
         <span>
           currentPage: {page} - {lastPage}
         </span>
-        <button onClick={() => handlePageChange(1)}>Next</button>
+        <button
+          disabled={page === lastPage}
+          onClick={() => handlePageChange(1)}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
