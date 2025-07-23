@@ -84,7 +84,7 @@ function DataTable({
       {!isLoading && !data?.items?.length && !error && (
         <div className="error-messages">
           <SearchX size={64} color="#fa6060" />
-          No results found.
+          No data available.
         </div>
       )}
 

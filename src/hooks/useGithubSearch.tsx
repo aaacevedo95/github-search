@@ -26,7 +26,6 @@ function useGithubSearch() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
-  console.log('lastPage, page', lastPage, page);
   const fetchResults = useCallback(
     async (pageToFetch: number) => {
       setIsLoading(true);
@@ -39,7 +38,10 @@ function useGithubSearch() {
         const response = await customOctokit.request(
           `GET /search/${searchType}`,
           {
-            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+              accept: 'application/vnd.github+json',
+            },
             q: searchText,
             per_page: perPage,
             page: pageToFetch,
