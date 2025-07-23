@@ -10,3 +10,40 @@
   justify-content: center;
   align-items: center;
 }
+
+/* responsive styles for phones */
+@media (max-width: 768px) {
+  #root {
+    max-width: 100%;
+    padding: 0 12px;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0 8px;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  #root {
+    padding: 0 6px;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

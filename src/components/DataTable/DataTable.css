@@ -120,3 +120,60 @@ table {
     color: #213547;
   }
 }
+
+/* responsive styles for phones */
+@media (max-width: 768px) {
+  .table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    margin: 4px;
+    height: auto;
+  }
+
+  .table-scroll-area {
+    overflow-x: auto;
+  }
+
+  table {
+    display: inline-block;
+    min-width: 600px;
+  }
+
+  .table-line,
+  .table-header {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+
+  .table-sticky-footer {
+    padding: 6px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  table {
+    min-width: 500px;
+  }
+
+  .table-line,
+  .table-header {
+    font-size: 13px;
+    padding: 4px 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  table {
+    min-width: 400px;
+  }
+
+  .table-line,
+  .table-header {
+    font-size: 12px;
+    padding: 3px 5px;
+  }
+
+  .table-sticky-footer {
+    padding: 4px 6px;
+  }
+}
