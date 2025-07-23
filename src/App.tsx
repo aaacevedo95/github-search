@@ -36,7 +36,7 @@ function App() {
           alignItems: 'center',
         }}
       >
-        <SearchField />
+        <SearchField fetchResults={fetchResults} />
         <SelectField
           name="searchType"
           options={endpointOptions}
@@ -48,7 +48,7 @@ function App() {
           parseType={parseAsPerPage}
         />
 
-        <button className="fetchButton" onClick={handleClick}>
+        <button className="fetch-button" onClick={handleClick}>
           Fetch
         </button>
       </div>

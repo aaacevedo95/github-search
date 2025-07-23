@@ -1,8 +1,11 @@
-import type { ChangeEvent } from 'react';
+import type { KeyboardEvent, ChangeEvent } from 'react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { Search } from 'lucide-react';
+type SearchFieldProps = {
+  fetchResults: (pageToFetch: number) => Promise<void>;
+};
 
-function SearchField() {
+function SearchField({ fetchResults }: SearchFieldProps) {
   const [searchText, setSearchText] = useQueryState(
     'searchText',
     parseAsString.withDefault('')
@@ -10,6 +13,9 @@ function SearchField() {
 
   const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
+  };
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') fetchResults(1);
   };
 
   return (
@@ -38,6 +44,7 @@ function SearchField() {
         }}
         value={searchText}
         onChange={handleTextChange}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );

@@ -26,6 +26,7 @@ function useGithubSearch() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
+  console.log('lastPage, page', lastPage, page);
   const fetchResults = useCallback(
     async (pageToFetch: number) => {
       setIsLoading(true);
@@ -46,19 +47,18 @@ function useGithubSearch() {
         );
 
         const linkHeader = response.headers.link || '';
-        const last = Number(
-          linkHeader.match(/page=(\d+)>; rel="last"/)?.[1] || 1
-        );
+        const lastMatch = linkHeader.match(/page=(\d+)>; rel="last"/);
 
+        // This is done to ensure that we keep the last page at all times.
+        setLastPage(lastMatch ? Number(lastMatch[1]) : lastPage);
         setData(response.data);
-        setLastPage(last);
       } catch (err) {
         setError(err as Error);
       } finally {
         setIsLoading(false);
       }
     },
-    [searchText, searchType, perPage, setPage]
+    [searchText, searchType, perPage, lastPage, setPage]
   );
 
   // Fetch results on first load

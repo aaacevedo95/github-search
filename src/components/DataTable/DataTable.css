@@ -1,47 +1,102 @@
-.table {
-  width: 800px;
-  height: 600px;
-  overflow: auto;
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 1000px;
+  height: 700px;
+  overflow: hidden;
   border: 1px solid #374151;
   margin: 8px;
   border-radius: 8px;
   background-color: #111827;
+  position: relative;
 }
 
-.tableLine {
+.table-scroll-area {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.table-line {
   border: 0.2px solid #374151;
   max-width: 300px;
   word-wrap: break-word;
   white-space: normal;
   padding: 8px;
+  color: white;
 }
 
-.tableHeader {
+.table-header {
+  background-color: #111827;
   border: 1px solid #374151;
   padding: 8px;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
+  color: white;
 }
 
-.tableFooter {
+.table-sticky-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: #111827;
+  border-top: 1px solid #374151;
+  flex-shrink: 0;
   position: sticky;
   bottom: 0;
-  z-index: 1;
+  z-index: 3;
+  color: white;
+}
+
+.table-totals {
+  margin-left: auto;
+  font-weight: bold;
 }
 
 .pagination {
   display: flex;
   gap: 8px;
-  justify-content: space-between;
   align-items: center;
+}
+.pagination button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.pagination button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+.pagination button:disabled {
+  background-color: #4b5563;
+  cursor: not-allowed;
+}
+
+.error-messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 120px;
 }
 
 .loader {
   position: absolute;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
   animation: loader 1s linear infinite;
+  color: #60a5fa;
+  z-index: 10;
 }
 
 @keyframes loader {
@@ -53,18 +108,24 @@
   }
 }
 
+/* Light mode */
 @media (prefers-color-scheme: light) {
-  .table {
+  .table-wrapper {
+    background-color: #e8edf3;
+    border: 1px solid #ddd;
+  }
+  .table-line {
+    border: 1px solid #ddd;
+    color: #213547;
+  }
+  .table-header {
     background-color: #e8edf3;
     border: 1px solid #ddd;
     color: #213547;
   }
-
-  .tableLine {
-    border: 1px solid #ddd;
-  }
-
-  .tableHeader {
-    border: 1px solid #ddd;
+  .table-sticky-footer {
+    background-color: #e8edf3;
+    border-top: 1px solid #ddd;
+    color: #213547;
   }
 }

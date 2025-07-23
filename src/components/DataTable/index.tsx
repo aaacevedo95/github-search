@@ -1,9 +1,17 @@
 import type { Endpoints } from '@octokit/types';
-import { LoaderPinwheel } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowLeftToLine,
+  ArrowRight,
+  ArrowRightToLine,
+  LoaderPinwheel,
+  SearchX,
+} from 'lucide-react';
 import { useQueryState } from 'nuqs';
 
-import './DataTable.css';
 import { parseAsPage } from '../../utils/queryParsers';
+
+import './DataTable.css';
 
 type DataTableProps = {
   data: null | Endpoints['GET /search/repositories']['response']['data'];
@@ -38,7 +46,6 @@ function renderCell(value: any) {
     );
   }
 
-  // render array
   if (Array.isArray(value)) {
     return value.map((v, i) => (
       <span key={i}>
@@ -48,7 +55,6 @@ function renderCell(value: any) {
     ));
   }
 
-  // in case of objects, break it up
   if (typeof value === 'object') {
     return <span>{Object.keys(value).slice(0, 3).join(', ')}...</span>;
   }
@@ -65,74 +71,87 @@ function DataTable({
 }: DataTableProps) {
   const [page, setPage] = useQueryState('page', parseAsPage);
 
-  const handlePageChange = (pageChange: number) => {
-    const newPage = Math.max(1, (page || 1) + pageChange);
-
+  const goToPage = (targetPage: number) => {
+    const newPage = Math.max(1, Math.min(targetPage, lastPage));
     setPage(newPage);
     fetchResults(newPage);
   };
 
   return (
-    <div>
-      {/* Table Component */}
-      <div className="table">
-        {isLoading && <LoaderPinwheel className="loader" size={64} />}
-        {data?.items && (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            {/* Header */}
-            <thead>
-              <tr>
-                {data?.items?.[0] &&
-                  Object.keys(data.items[0]).map((key) => (
-                    <th key={key} className="tableHeader">
-                      {key}
-                    </th>
-                  ))}
-              </tr>
-            </thead>
+    <div className="table-wrapper">
+      {isLoading && <LoaderPinwheel className="loader" size={64} />}
+      {error && <div className="error-messages">Error: {error.message}</div>}
+      {!isLoading && !data?.items?.length && !error && (
+        <div className="error-messages">
+          <SearchX size={64} color="#fa6060" />
+          No results found.
+        </div>
+      )}
 
-            {/* Body */}
-            <tbody>
-              {data?.items?.map((item, index) => (
-                <tr key={index} className="tableLine">
-                  {Object.entries(item).map(([key, value]) => (
-                    <td
-                      key={key}
-                      className="tableLine"
-                      style={{ verticalAlign: 'top' }}
-                    >
-                      {renderCell(value)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
+      <div className="table-scroll-area">
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          {/* Header */}
+          <thead>
+            <tr>
+              {data?.items?.[0] &&
+                Object.keys(data.items[0]).map((key) => (
+                  <th key={key} className="table-header">
+                    {key}
+                  </th>
+                ))}
+            </tr>
+          </thead>
 
-            <tfoot>
-              <tr className="tableFooter">
-                <th>Totals</th>
-                <td>{data?.total_count?.toLocaleString()}</td>
+          {/* Body */}
+          <tbody>
+            {data?.items?.map((item, index) => (
+              <tr key={index} className="table-line">
+                {Object.entries(item).map(([key, value]) => (
+                  <td
+                    key={key}
+                    className="table-line"
+                    style={{ verticalAlign: 'top' }}
+                  >
+                    {renderCell(value)}
+                  </td>
+                ))}
               </tr>
-            </tfoot>
-          </table>
-        )}
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Table Footer/ Pagination */}
-      <div className="pagination">
-        <button disabled={page === 1} onClick={() => handlePageChange(-1)}>
-          Prev
-        </button>
-        <span>
-          currentPage: {page} - {lastPage}
-        </span>
-        <button
-          disabled={page === lastPage}
-          onClick={() => handlePageChange(1)}
-        >
-          Next
-        </button>
-      </div>
+      {/* Footer */}
+      {(data?.items || isLoading || error) && (
+        <div className="table-sticky-footer">
+          <div>Total: {data?.total_count?.toLocaleString() || 0}</div>
+
+          {/* Pagination */}
+          <div className="pagination">
+            <button disabled={page === 1} onClick={() => goToPage(1)}>
+              <ArrowLeftToLine />
+            </button>
+            <button disabled={page === 1} onClick={() => goToPage(page - 1)}>
+              <ArrowLeft />
+            </button>
+            <span>
+              {page} - {lastPage}
+            </span>
+            <button
+              disabled={page === lastPage}
+              onClick={() => goToPage(page + 1)}
+            >
+              <ArrowRight />
+            </button>
+            <button
+              disabled={page === lastPage}
+              onClick={() => goToPage(lastPage)}
+            >
+              <ArrowRightToLine />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
