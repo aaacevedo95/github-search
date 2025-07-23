@@ -126,8 +126,9 @@ table {
   .table-wrapper {
     width: 100%;
     max-width: 100%;
-    margin: 4px;
-    height: auto;
+    margin: 4px auto;
+    height: 600px;
+    overflow-x: hidden;
   }
 
   .table-scroll-area {
