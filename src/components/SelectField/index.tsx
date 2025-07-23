@@ -1,6 +1,7 @@
 import { useQueryState, type ParserBuilder } from 'nuqs';
 
 import './SelectField.css';
+import { useTranslation } from 'react-i18next';
 
 type SelectFieldProps = {
   name: string;
@@ -13,6 +14,7 @@ type SelectFieldProps = {
 };
 
 function SelectField({ name, options, parseType }: SelectFieldProps) {
+  const { t } = useTranslation();
   const [value, setValue] = useQueryState(name, parseType);
 
   return (
@@ -26,7 +28,7 @@ function SelectField({ name, options, parseType }: SelectFieldProps) {
       >
         {options.map(({ label, value }) => (
           <option key={value} value={value}>
-            {label}
+            {t(`${label}`)}
           </option>
         ))}
       </select>

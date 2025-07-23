@@ -12,6 +12,7 @@ import { useQueryState } from 'nuqs';
 import { parseAsPage } from '../../utils/queryParsers';
 
 import './DataTable.css';
+import { useTranslation } from 'react-i18next';
 
 type DataTableProps = {
   data: null | Endpoints['GET /search/repositories']['response']['data'];
@@ -69,6 +70,7 @@ function DataTable({
   lastPage,
   fetchResults,
 }: DataTableProps) {
+  const { t } = useTranslation();
   const [page, setPage] = useQueryState('page', parseAsPage);
 
   const goToPage = (targetPage: number) => {
@@ -80,11 +82,15 @@ function DataTable({
   return (
     <div className="table-wrapper">
       {isLoading && <LoaderPinwheel className="loader" size={64} />}
-      {error && <div className="error-messages">Error: {error.message}</div>}
+      {error && (
+        <div className="error-messages">
+          {t('error')}: {error.message}
+        </div>
+      )}
       {!isLoading && !data?.items?.length && !error && (
         <div className="error-messages">
           <SearchX size={64} color="#fa6060" />
-          No data available.
+          {t('noData')}
         </div>
       )}
 

@@ -1,0 +1,22 @@
+{
+    "fetch": "実行",
+    "total": "合計",
+    "searchPlaceholder": "キーワードを入力",
+    "noData": "データがありません。",
+    "perPage": {
+        "20perPage": "20件表示",
+        "40perPage": "40件表示",
+        "60perPage": "60件表示",
+        "80perPage": "80件表示",
+        "100perPage": "100件表示"
+    },
+    "endpoint": {
+        "repositories": "リポジトリ",
+        "users": "ユーザー",
+        "issues": "課題",
+        "commits": "コミット",
+        "topics": "トピック",
+        "labels": "ラベル",
+        "code": "コード"
+    }
+}

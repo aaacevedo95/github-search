@@ -1,0 +1,9 @@
+.unselected-button {
+  background-color: #2b2b2b;
+  color: gray;
+}
+
+.unselected-button:hover {
+  background-color: #454343;
+  color: gray;
+}

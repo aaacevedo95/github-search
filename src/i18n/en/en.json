@@ -1,0 +1,22 @@
+{
+    "fetch": "Fetch",
+    "total": "Total",
+    "searchPlaceholder": "Search...",
+    "noData": "No data available.",
+    "perPage": {
+        "20perPage": "20 Per Page",
+        "40perPage": "40 Per Page",
+        "60perPage": "60 Per Page",
+        "80perPage": "80 Per Page",
+        "100perPage": "100 Per Page"
+    },
+    "endpoint": {
+        "repositories": "Repositories",
+        "users": "Users",
+        "issues": "Issues",
+        "commits": "Commits",
+        "topics": "Topics",
+        "labels": "Labels",
+        "code": "Code"
+    }
+}

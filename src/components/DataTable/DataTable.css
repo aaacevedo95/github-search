@@ -65,20 +65,11 @@ table {
   align-items: center;
 }
 .pagination button {
-  background-color: #3b82f6;
-  color: white;
   border: none;
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
-}
-.pagination button:hover:not(:disabled) {
-  background-color: #2563eb;
-}
-.pagination button:disabled {
-  background-color: #4b5563;
-  cursor: not-allowed;
 }
 
 .error-messages {

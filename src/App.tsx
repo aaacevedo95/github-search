@@ -7,26 +7,29 @@ import { parseAsPerPage, parseAsSearchType } from './utils/queryParsers';
 
 import './App.css';
 import { parseAsString, useQueryState } from 'nuqs';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 const endpointOptions = [
-  { label: 'repositories', value: 'repositories' },
-  { label: 'users', value: 'users' },
-  { label: 'issues', value: 'issues' },
-  { label: 'commits', value: 'commits' },
-  { label: 'topics', value: 'topics' },
-  { label: 'labels', value: 'labels' },
-  { label: 'code', value: 'code' },
+  { label: 'endpoint.repositories', value: 'repositories' },
+  { label: 'endpoint.users', value: 'users' },
+  { label: 'endpoint.issues', value: 'issues' },
+  { label: 'endpoint.commits', value: 'commits' },
+  { label: 'endpoint.topics', value: 'topics' },
+  { label: 'endpoint.labels', value: 'labels' },
+  { label: 'endpoint.code', value: 'code' },
 ];
 
 const perPageOptions = [
-  { label: '20 per page', value: '20' },
-  { label: '40 per page', value: '40' },
-  { label: '60 per page', value: '60' },
-  { label: '80 per page', value: '80' },
-  { label: '100 per page', value: '100' },
+  { label: 'perPage.20perPage', value: '20' },
+  { label: 'perPage.40perPage', value: '40' },
+  { label: 'perPage.60perPage', value: '60' },
+  { label: 'perPage.80perPage', value: '80' },
+  { label: 'perPage.100perPage', value: '100' },
 ];
 
 function App() {
+  const { t } = useTranslation();
   const [searchText] = useQueryState(
     'searchText',
     parseAsString.withDefault('')
@@ -39,6 +42,10 @@ function App() {
 
   return (
     <>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <LanguageSwitcher />
+      </div>
+
       <div className="filter-row">
         <SearchField fetchResults={fetchResults} />
         <SelectField
@@ -52,12 +59,8 @@ function App() {
           parseType={parseAsPerPage}
         />
 
-        <button
-          disabled={searchText === ''}
-          className="fetch-button"
-          onClick={handleClick}
-        >
-          Fetch
+        <button disabled={searchText === ''} onClick={handleClick}>
+          {t('fetch')}
         </button>
       </div>
 

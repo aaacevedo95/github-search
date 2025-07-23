@@ -1,7 +1,6 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
@@ -10,16 +9,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.fetch-button {
-  background-color: #3b82f6;
-  color: white;
-}
-.fetch-button:disabled {
-  background-color: #4b5563;
-  cursor: not-allowed;
-}
-.fetch-button:hover:not(:disabled) {
-  background-color: #2563eb;
 }
